@@ -1,0 +1,15 @@
+app:
+  name: go-online-shop
+  port: ":9000"
+
+db:
+  host: localhost
+  port: 5432
+  username: developer
+  password: "21052000"
+  dbname: go_online_shop
+  connection_pool:
+    max_idle_connection: 10
+    max_open_connection: 30
+    max_lifetime_connection: 60
+    max_idletime_connection: 60
