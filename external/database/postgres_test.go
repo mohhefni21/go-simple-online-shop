@@ -18,8 +18,10 @@ func init() {
 
 func TestConnectionPostgres(t *testing.T) {
 	t.Run("should successfully connect to the database", func(t *testing.T) {
+		// Action
 		db, err := Connection(config.Cfg.Db)
 
+		// Assert
 		require.Nil(t, err)
 		require.NotNil(t, db)
 	})
