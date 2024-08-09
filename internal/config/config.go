@@ -12,8 +12,13 @@ type Config struct {
 }
 
 type AppConfig struct {
-	Name string `yaml:"name"`
-	Port string `yaml:"port"`
+	Name      string          `yaml:"name"`
+	Port      string          `yaml:"port"`
+	Encrytion EncrytionConfig `yaml:"encrytion"`
+}
+
+type EncrytionConfig struct {
+	Salt uint8 `yaml:"salt"`
 }
 
 type DbConfig struct {

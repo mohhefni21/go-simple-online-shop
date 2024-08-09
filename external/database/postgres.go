@@ -23,8 +23,6 @@ func Connection(config config.DbConfig) (db *sqlx.DB, err error) {
 		return
 	}
 
-	defer db.Close()
-
 	err = db.Ping()
 	if err != nil {
 		return

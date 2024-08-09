@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestEntityAuth(t *testing.T) {
+func TestEntityRegister(t *testing.T) {
 	t.Run("should return an error when email is not provided", func(t *testing.T) {
 		// Arrange
 		authEntity := AuthEntity{
@@ -15,7 +15,7 @@ func TestEntityAuth(t *testing.T) {
 		}
 
 		// Action
-		err := authEntity.Validate()
+		err := authEntity.RegisterValidate()
 
 		// Assert
 		require.NotNil(t, err)
@@ -29,7 +29,7 @@ func TestEntityAuth(t *testing.T) {
 		}
 
 		// Action
-		err := authEntity.Validate()
+		err := authEntity.RegisterValidate()
 
 		// Assert
 		require.NotNil(t, err)
@@ -43,7 +43,7 @@ func TestEntityAuth(t *testing.T) {
 		}
 
 		// Action
-		err := authEntity.Validate()
+		err := authEntity.RegisterValidate()
 
 		// Assert
 		require.NotNil(t, err)
@@ -57,7 +57,7 @@ func TestEntityAuth(t *testing.T) {
 		}
 
 		// Action
-		err := authEntity.Validate()
+		err := authEntity.RegisterValidate()
 
 		// Assert
 		require.NotNil(t, err)
@@ -71,7 +71,7 @@ func TestEntityAuth(t *testing.T) {
 		}
 
 		// Action
-		err := authEntity.Validate()
+		err := authEntity.RegisterValidate()
 
 		// Assert
 		require.Nil(t, err)

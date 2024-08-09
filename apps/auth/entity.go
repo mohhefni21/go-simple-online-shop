@@ -4,6 +4,8 @@ import (
 	"mohhefni/go-online-shop/infra/response"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Role string
@@ -14,25 +16,44 @@ const (
 )
 
 type AuthEntity struct {
-	Id         int       `db:"id"`
-	Email      string    `db:"email"`
-	Password   string    `db:"password"`
-	Role       Role      `db:"role"`
-	CreatedAt  time.Time `db:"created_at"`
-	UpdateddAt time.Time `db:"updated_at"`
+	Id        int       `db:"id"`
+	PublicId  uuid.UUID `db:"public_id"`
+	Email     string    `db:"email"`
+	Password  string    `db:"password"`
+	Role      Role      `db:"role"`
+	CreatedAt time.Time `db:"created_at"`
+	UpdatedAt time.Time `db:"updated_at"`
 }
 
 func NewFromRegisterRequest(req RegisterRequestPayload) AuthEntity {
 	return AuthEntity{
-		Email:      req.Email,
-		Password:   req.Password,
-		Role:       ROLE_USER,
-		CreatedAt:  time.Now(),
-		UpdateddAt: time.Now(),
+		PublicId:  uuid.New(),
+		Email:     req.Email,
+		Password:  req.Password,
+		Role:      ROLE_USER,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 }
 
-func (a *AuthEntity) Validate() (err error) {
+func NewFromLoginRequest(req LoginRequestPayload) AuthEntity {
+	return AuthEntity{
+		Email:    req.Email,
+		Password: req.Password,
+	}
+}
+
+func (a *AuthEntity) RegisterValidate() (err error) {
+	if err = a.ValidateEmail(); err != nil {
+		return
+	}
+	if err = a.ValidatePassword(); err != nil {
+		return
+	}
+	return
+}
+
+func (a *AuthEntity) LoginValidate() (err error) {
 	if err = a.ValidateEmail(); err != nil {
 		return
 	}

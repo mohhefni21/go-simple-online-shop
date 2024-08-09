@@ -1,6 +1,8 @@
 app:
   name: go-online-shop
   port: ":9000"
+  encrytion:
+    salt: 10
 
 db:
   host: localhost
