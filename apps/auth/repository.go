@@ -9,17 +9,23 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+type Repository interface {
+	AddUser(ctx context.Context, model AuthEntity) (err error)
+	VerifyAvailableEmail(ctx context.Context, email string) (err error)
+	GetUserByEmail(ctx context.Context, email string) (authEntity AuthEntity, err error)
+}
+
 type repository struct {
 	db *sqlx.DB
 }
 
-func newRepository(db *sqlx.DB) repository {
-	return repository{
+func newRepository(db *sqlx.DB) *repository {
+	return &repository{
 		db: db,
 	}
 }
 
-func (r repository) AddUser(ctx context.Context, model AuthEntity) (err error) {
+func (r *repository) AddUser(ctx context.Context, model AuthEntity) (err error) {
 	query := `
 		INSERT INTO users (
 			public_id, email, password, role, created_at, updated_at
@@ -40,7 +46,7 @@ func (r repository) AddUser(ctx context.Context, model AuthEntity) (err error) {
 	return
 }
 
-func (r repository) VerifyAvailableEmail(ctx context.Context, email string) (err error) {
+func (r *repository) VerifyAvailableEmail(ctx context.Context, email string) (err error) {
 	var count int8
 	query := `
 		SELECT COUNT(email) FROM users WHERE email = $1
@@ -58,7 +64,7 @@ func (r repository) VerifyAvailableEmail(ctx context.Context, email string) (err
 	return nil
 }
 
-func (r repository) GetUserByEmail(ctx context.Context, email string) (user AuthEntity, err error) {
+func (r *repository) GetUserByEmail(ctx context.Context, email string) (user AuthEntity, err error) {
 	query := `
 		SELECT * FROM users WHERE email = $1
 	`

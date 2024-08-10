@@ -3,6 +3,7 @@ app:
   port: ":9000"
   encrytion:
     salt: 10
+    jwt_secret: "iniSangatRahasia"
 
 db:
   host: localhost

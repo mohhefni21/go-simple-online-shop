@@ -1,6 +1,7 @@
 package utility
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -23,17 +24,27 @@ func GenerateToken(id string, role string, secret string) (jwtToken string, err 
 	return
 }
 
-// func ValidateToken(tokenString string, secret string) (id string, role string, err error) {
-// 	tokens, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-// 		if _, ok := t.Method.(*jwt.SigningMethodECDSA); !ok {
-// 			return nil, fmt.Errorf("unexpected signing method")
-// 		}
+func ValidateToken(tokenString string, secret string) (id string, role string, err error) {
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method")
+		}
 
-// 		return secret, nil
-// 	})
+		return []byte(secret), nil
+	})
 
-// 	if err != nil {
-// 		return
-// 	}
+	if err != nil {
+		return
+	}
 
-// }
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok && token.Valid {
+		id = fmt.Sprintf("%v", claims["id"])
+		role = fmt.Sprintf("%v", claims["role"])
+		return
+	}
+
+	err = fmt.Errorf("unable to extract claims")
+
+	return
+}

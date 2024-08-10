@@ -18,7 +18,8 @@ type AppConfig struct {
 }
 
 type EncrytionConfig struct {
-	Salt uint8 `yaml:"salt"`
+	Salt      uint8  `yaml:"salt"`
+	JWTSecret string `yaml:"jwt_secret"`
 }
 
 type DbConfig struct {
