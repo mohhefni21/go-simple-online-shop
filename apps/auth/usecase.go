@@ -7,7 +7,7 @@ import (
 )
 
 type Usecase interface {
-	RegisterUser(ctx context.Context, req RegisterRequestPayload) (err error)
+	RegisterUser(ctx context.Context, req RegisterRequestPayload) (id string, err error)
 	LoginUser(ctx context.Context, req LoginRequestPayload) (token string, err error)
 }
 
@@ -23,7 +23,7 @@ func newUsecase(repo Repository, service Service) Usecase {
 	}
 }
 
-func (u *usecase) RegisterUser(ctx context.Context, req RegisterRequestPayload) (err error) {
+func (u *usecase) RegisterUser(ctx context.Context, req RegisterRequestPayload) (id string, err error) {
 	authEntity := NewFromRegisterRequest(req)
 	if err = authEntity.RegisterValidate(); err != nil {
 		return
@@ -39,7 +39,9 @@ func (u *usecase) RegisterUser(ctx context.Context, req RegisterRequestPayload) 
 		return
 	}
 
-	return u.repo.AddUser(ctx, authEntity)
+	id, err = u.repo.AddUser(ctx, authEntity)
+
+	return
 }
 
 func (u *usecase) LoginUser(ctx context.Context, req LoginRequestPayload) (token string, err error) {

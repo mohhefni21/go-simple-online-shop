@@ -10,7 +10,7 @@ import (
 )
 
 type Repository interface {
-	AddUser(ctx context.Context, model AuthEntity) (err error)
+	AddUser(ctx context.Context, model AuthEntity) (id string, err error)
 	VerifyAvailableEmail(ctx context.Context, email string) (err error)
 	GetUserByEmail(ctx context.Context, email string) (authEntity AuthEntity, err error)
 }
@@ -25,13 +25,13 @@ func newRepository(db *sqlx.DB) *repository {
 	}
 }
 
-func (r *repository) AddUser(ctx context.Context, model AuthEntity) (err error) {
+func (r *repository) AddUser(ctx context.Context, model AuthEntity) (id string, err error) {
 	query := `
 		INSERT INTO users (
 			public_id, email, password, role, created_at, updated_at
 		) VALUES (
 			:public_id, :email, :password, :role, :created_at, :updated_at
-		)
+		) RETURNING public_id
 	`
 
 	stmt, err := r.db.PrepareNamedContext(ctx, query)
@@ -41,7 +41,10 @@ func (r *repository) AddUser(ctx context.Context, model AuthEntity) (err error) 
 
 	defer stmt.Close()
 
-	stmt.ExecContext(ctx, model)
+	err = stmt.GetContext(ctx, &id, model)
+	if err != nil {
+		return
+	}
 
 	return
 }

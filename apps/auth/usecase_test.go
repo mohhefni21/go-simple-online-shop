@@ -70,7 +70,7 @@ func TestRegister(t *testing.T) {
 		}
 
 		// Action
-		err = ucs.RegisterUser(context.Background(), payload)
+		_, err = ucs.RegisterUser(context.Background(), payload)
 
 		// Assert
 		require.NotNil(t, err)
@@ -84,7 +84,7 @@ func TestRegister(t *testing.T) {
 		}
 
 		// Action
-		err := ucs.RegisterUser(context.Background(), payload)
+		_, err := ucs.RegisterUser(context.Background(), payload)
 
 		// Assert
 		require.Nil(t, err)
@@ -105,7 +105,7 @@ func TestLogin(t *testing.T) {
 			Email:    email,
 			Password: password,
 		}
-		err := ucs.RegisterUser(context.Background(), payloadRegister)
+		_, err := ucs.RegisterUser(context.Background(), payloadRegister)
 		if err != nil {
 			panic(err)
 		}
