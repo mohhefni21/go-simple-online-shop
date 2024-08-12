@@ -1,31 +1,32 @@
-package auth
+package repository
 
 import (
 	"context"
 	"database/sql"
 	"errors"
+	"mohhefni/go-online-shop/apps/auth/entity"
 	"mohhefni/go-online-shop/infra/response"
 
 	"github.com/jmoiron/sqlx"
 )
 
 type Repository interface {
-	AddUser(ctx context.Context, model AuthEntity) (id string, err error)
+	AddUser(ctx context.Context, model entity.AuthEntity) (id string, err error)
 	VerifyAvailableEmail(ctx context.Context, email string) (err error)
-	GetUserByEmail(ctx context.Context, email string) (authEntity AuthEntity, err error)
+	GetUserByEmail(ctx context.Context, email string) (authEntity entity.AuthEntity, err error)
 }
 
 type repository struct {
 	db *sqlx.DB
 }
 
-func newRepository(db *sqlx.DB) *repository {
+func NewRepository(db *sqlx.DB) *repository {
 	return &repository{
 		db: db,
 	}
 }
 
-func (r *repository) AddUser(ctx context.Context, model AuthEntity) (id string, err error) {
+func (r *repository) AddUser(ctx context.Context, model entity.AuthEntity) (id string, err error) {
 	query := `
 		INSERT INTO users (
 			public_id, email, password, role, created_at, updated_at
@@ -67,7 +68,7 @@ func (r *repository) VerifyAvailableEmail(ctx context.Context, email string) (er
 	return nil
 }
 
-func (r *repository) GetUserByEmail(ctx context.Context, email string) (user AuthEntity, err error) {
+func (r *repository) GetUserByEmail(ctx context.Context, email string) (user entity.AuthEntity, err error) {
 	query := `
 		SELECT * FROM users WHERE email = $1
 	`
@@ -75,9 +76,9 @@ func (r *repository) GetUserByEmail(ctx context.Context, email string) (user Aut
 	err = r.db.GetContext(ctx, &user, query, email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return AuthEntity{}, response.ErrNotFound
+			return entity.AuthEntity{}, response.ErrNotFound
 		}
-		return AuthEntity{}, err
+		return entity.AuthEntity{}, err
 	}
 
 	return user, nil

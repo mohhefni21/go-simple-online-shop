@@ -1,7 +1,10 @@
-package auth
+package usecase
 
 import (
 	"context"
+	"mohhefni/go-online-shop/apps/auth/repository"
+	"mohhefni/go-online-shop/apps/auth/request"
+	"mohhefni/go-online-shop/apps/auth/service"
 	"mohhefni/go-online-shop/external/database"
 	"mohhefni/go-online-shop/internal/config"
 	"mohhefni/go-online-shop/test"
@@ -14,7 +17,7 @@ import (
 var ucs Usecase
 
 func init() {
-	filename := "../../cmd/api/config.yaml"
+	filename := "../../../cmd/api/config.yaml"
 	err := config.LoadConfig(filename)
 
 	if err != nil {
@@ -26,9 +29,9 @@ func init() {
 		panic(err)
 	}
 
-	repository := newRepository(db)
-	svc := newService(repository)
-	ucs = newUsecase(repository, svc)
+	repository := repository.NewRepository(db)
+	svc := service.NewService(repository)
+	ucs = NewUsecase(repository, svc)
 }
 
 var authTableTestHelper *test.AuthTableTestHelper
@@ -54,7 +57,7 @@ func TestRegister(t *testing.T) {
 
 	t.Run("should return an error when email already used", func(t *testing.T) {
 		// Arrange
-		payload := RegisterRequestPayload{
+		payload := request.RegisterRequestPayload{
 			Email:    "user1@gmail.com",
 			Password: "123456789",
 		}
@@ -78,7 +81,7 @@ func TestRegister(t *testing.T) {
 
 	t.Run("should not return an error when payload valid", func(t *testing.T) {
 		// Arrange
-		payload := RegisterRequestPayload{
+		payload := request.RegisterRequestPayload{
 			Email:    "user2@gmail.com",
 			Password: "123456789",
 		}
@@ -101,7 +104,7 @@ func TestLogin(t *testing.T) {
 		// Arrange
 		email := "user2@gmail.com"
 		password := "123456789"
-		payloadRegister := RegisterRequestPayload{
+		payloadRegister := request.RegisterRequestPayload{
 			Email:    email,
 			Password: password,
 		}
@@ -109,7 +112,7 @@ func TestLogin(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
-		payloadLogin := LoginRequestPayload{
+		payloadLogin := request.LoginRequestPayload{
 			Email:    email,
 			Password: password,
 		}

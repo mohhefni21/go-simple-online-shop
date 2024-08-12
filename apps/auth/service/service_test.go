@@ -1,6 +1,7 @@
-package auth
+package service
 
 import (
+	"mohhefni/go-online-shop/apps/auth/repository"
 	"mohhefni/go-online-shop/external/database"
 	"mohhefni/go-online-shop/internal/config"
 	"testing"
@@ -12,7 +13,7 @@ import (
 var svc *service
 
 func init() {
-	filename := "../../cmd/api/config.yaml"
+	filename := "../../../cmd/api/config.yaml"
 	err := config.LoadConfig(filename)
 
 	if err != nil {
@@ -24,8 +25,8 @@ func init() {
 		panic(err)
 	}
 
-	repository := newRepository(db)
-	svc = newService(repository)
+	repository := repository.NewRepository(db)
+	svc = NewService(repository)
 }
 
 func TestEncryptPassword(t *testing.T) {

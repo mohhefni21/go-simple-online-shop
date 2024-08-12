@@ -1,6 +1,7 @@
-package auth
+package service
 
 import (
+	"mohhefni/go-online-shop/apps/auth/repository"
 	"mohhefni/go-online-shop/utility"
 
 	"golang.org/x/crypto/bcrypt"
@@ -13,10 +14,10 @@ type Service interface {
 }
 
 type service struct {
-	repo Repository
+	repo repository.Repository
 }
 
-func newService(repo Repository) *service {
+func NewService(repo repository.Repository) *service {
 	return &service{
 		repo: repo,
 	}

@@ -1,6 +1,8 @@
-package auth
+package handler
 
 import (
+	"mohhefni/go-online-shop/apps/auth/request"
+	"mohhefni/go-online-shop/apps/auth/usecase"
 	infraecho "mohhefni/go-online-shop/infra/echo"
 	"mohhefni/go-online-shop/infra/response"
 	"net/http"
@@ -9,17 +11,17 @@ import (
 )
 
 type handler struct {
-	ucs Usecase
+	ucs usecase.Usecase
 }
 
-func newHandler(usecase Usecase) *handler {
+func NewHandler(usecase usecase.Usecase) *handler {
 	return &handler{
 		ucs: usecase,
 	}
 }
 
-func (h *handler) register(c echo.Context) error {
-	req := RegisterRequestPayload{}
+func (h *handler) Register(c echo.Context) error {
+	req := request.RegisterRequestPayload{}
 
 	err := c.Bind(&req)
 	if err != nil {
@@ -52,8 +54,8 @@ func (h *handler) register(c echo.Context) error {
 	).Send(c)
 }
 
-func (h *handler) login(c echo.Context) error {
-	req := LoginRequestPayload{}
+func (h *handler) Login(c echo.Context) error {
+	req := request.LoginRequestPayload{}
 
 	err := c.Bind(&req)
 	if err != nil {

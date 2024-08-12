@@ -1,30 +1,34 @@
-package auth
+package usecase
 
 import (
 	"context"
+	"mohhefni/go-online-shop/apps/auth/entity"
+	"mohhefni/go-online-shop/apps/auth/repository"
+	"mohhefni/go-online-shop/apps/auth/request"
+	"mohhefni/go-online-shop/apps/auth/service"
 	"mohhefni/go-online-shop/infra/response"
 	"mohhefni/go-online-shop/internal/config"
 )
 
 type Usecase interface {
-	RegisterUser(ctx context.Context, req RegisterRequestPayload) (id string, err error)
-	LoginUser(ctx context.Context, req LoginRequestPayload) (token string, err error)
+	RegisterUser(ctx context.Context, req request.RegisterRequestPayload) (id string, err error)
+	LoginUser(ctx context.Context, req request.LoginRequestPayload) (token string, err error)
 }
 
 type usecase struct {
-	repo Repository
-	svc  Service
+	repo repository.Repository
+	svc  service.Service
 }
 
-func newUsecase(repo Repository, service Service) Usecase {
+func NewUsecase(repo repository.Repository, service service.Service) Usecase {
 	return &usecase{
 		repo: repo,
 		svc:  service,
 	}
 }
 
-func (u *usecase) RegisterUser(ctx context.Context, req RegisterRequestPayload) (id string, err error) {
-	authEntity := NewFromRegisterRequest(req)
+func (u *usecase) RegisterUser(ctx context.Context, req request.RegisterRequestPayload) (id string, err error) {
+	authEntity := entity.NewFromRegisterRequest(req)
 	if err = authEntity.RegisterValidate(); err != nil {
 		return
 	}
@@ -44,8 +48,8 @@ func (u *usecase) RegisterUser(ctx context.Context, req RegisterRequestPayload) 
 	return
 }
 
-func (u *usecase) LoginUser(ctx context.Context, req LoginRequestPayload) (token string, err error) {
-	authEntity := NewFromLoginRequest(req)
+func (u *usecase) LoginUser(ctx context.Context, req request.LoginRequestPayload) (token string, err error) {
+	authEntity := entity.NewFromLoginRequest(req)
 	if err = authEntity.LoginValidate(); err != nil {
 		return
 	}

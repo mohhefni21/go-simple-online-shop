@@ -1,6 +1,7 @@
-package auth
+package entity
 
 import (
+	"mohhefni/go-online-shop/apps/auth/request"
 	"mohhefni/go-online-shop/infra/response"
 	"strings"
 	"time"
@@ -25,7 +26,7 @@ type AuthEntity struct {
 	UpdatedAt time.Time `db:"updated_at"`
 }
 
-func NewFromRegisterRequest(req RegisterRequestPayload) AuthEntity {
+func NewFromRegisterRequest(req request.RegisterRequestPayload) AuthEntity {
 	return AuthEntity{
 		PublicId:  uuid.New(),
 		Email:     req.Email,
@@ -36,7 +37,7 @@ func NewFromRegisterRequest(req RegisterRequestPayload) AuthEntity {
 	}
 }
 
-func NewFromLoginRequest(req LoginRequestPayload) AuthEntity {
+func NewFromLoginRequest(req request.LoginRequestPayload) AuthEntity {
 	return AuthEntity{
 		Email:    req.Email,
 		Password: req.Password,
