@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"mohhefni/go-online-shop/apps/auth/entity"
-	"mohhefni/go-online-shop/infra/response"
+	"mohhefni/go-online-shop/infra/errorpkg"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -62,7 +62,7 @@ func (r *repository) VerifyAvailableEmail(ctx context.Context, email string) (er
 	}
 
 	if count > 0 {
-		return response.ErrEmailAlreadyUsed
+		return errorpkg.ErrEmailAlreadyUsed
 	}
 
 	return nil
@@ -76,7 +76,7 @@ func (r *repository) GetUserByEmail(ctx context.Context, email string) (user ent
 	err = r.db.GetContext(ctx, &user, query, email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return entity.AuthEntity{}, response.ErrNotFound
+			return entity.AuthEntity{}, errorpkg.ErrNotFound
 		}
 		return entity.AuthEntity{}, err
 	}

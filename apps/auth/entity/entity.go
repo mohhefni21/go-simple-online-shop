@@ -2,7 +2,7 @@ package entity
 
 import (
 	"mohhefni/go-online-shop/apps/auth/request"
-	"mohhefni/go-online-shop/infra/response"
+	"mohhefni/go-online-shop/infra/errorpkg"
 	"strings"
 	"time"
 
@@ -66,12 +66,12 @@ func (a *AuthEntity) LoginValidate() (err error) {
 
 func (a *AuthEntity) ValidateEmail() (err error) {
 	if a.Email == "" {
-		return response.ErrEmailRequired
+		return errorpkg.ErrEmailRequired
 	}
 
 	splitEmail := strings.Split(a.Email, "@")
 	if len(splitEmail) != 2 {
-		return response.ErrEmailInvalid
+		return errorpkg.ErrEmailInvalid
 	}
 
 	return
@@ -79,11 +79,11 @@ func (a *AuthEntity) ValidateEmail() (err error) {
 
 func (a *AuthEntity) ValidatePassword() (err error) {
 	if a.Password == "" {
-		return response.ErrPasswordRequired
+		return errorpkg.ErrPasswordRequired
 	}
 
 	if len(a.Password) < 6 {
-		return response.ErrPasswordInvalidLength
+		return errorpkg.ErrPasswordInvalidLength
 	}
 
 	return

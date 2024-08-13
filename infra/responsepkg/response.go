@@ -1,7 +1,7 @@
-package infraecho
+package responsepkg
 
 import (
-	"mohhefni/go-online-shop/infra/response"
+	"mohhefni/go-online-shop/infra/errorpkg"
 
 	"github.com/labstack/echo/v4"
 )
@@ -40,7 +40,7 @@ func WithSuccess(success bool) func(*Response) *Response {
 	}
 }
 
-func WithMesssage(message string) func(*Response) *Response {
+func WithMessage(message string) func(*Response) *Response {
 	return func(r *Response) *Response {
 		r.Message = message
 		return r
@@ -58,9 +58,9 @@ func WithError(err error) func(*Response) *Response {
 	return func(r *Response) *Response {
 		r.Success = false
 
-		myError, ok := err.(response.Error)
+		myError, ok := err.(errorpkg.Error)
 		if !ok {
-			myError = response.ErrorGeneral
+			myError = errorpkg.ErrorGeneral
 		}
 
 		r.Error = myError.Messsage

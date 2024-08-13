@@ -6,7 +6,7 @@ import (
 	"mohhefni/go-online-shop/apps/auth/repository"
 	"mohhefni/go-online-shop/apps/auth/request"
 	"mohhefni/go-online-shop/apps/auth/service"
-	"mohhefni/go-online-shop/infra/response"
+	"mohhefni/go-online-shop/infra/errorpkg"
 	"mohhefni/go-online-shop/internal/config"
 )
 
@@ -61,7 +61,7 @@ func (u *usecase) LoginUser(ctx context.Context, req request.LoginRequestPayload
 
 	err = u.svc.VerifyPasswordFromPlain(authEntity.Password, req.Password)
 	if err != nil {
-		err = response.ErrPasswordNotMatch
+		err = errorpkg.ErrPasswordNotMatch
 		return
 	}
 

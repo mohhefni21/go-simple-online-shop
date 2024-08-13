@@ -3,8 +3,8 @@ package handler
 import (
 	"mohhefni/go-online-shop/apps/auth/request"
 	"mohhefni/go-online-shop/apps/auth/usecase"
-	infraecho "mohhefni/go-online-shop/infra/echo"
-	"mohhefni/go-online-shop/infra/response"
+	"mohhefni/go-online-shop/infra/errorpkg"
+	"mohhefni/go-online-shop/infra/responsepkg"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -25,30 +25,30 @@ func (h *handler) Register(c echo.Context) error {
 
 	err := c.Bind(&req)
 	if err != nil {
-		myError := response.ErrorBadRequest
-		return infraecho.NewResponse(
-			infraecho.WithMesssage(err.Error()),
-			infraecho.WithError(myError),
-			infraecho.WithHttpCode(myError.HttpCode),
+		myError := errorpkg.ErrorBadRequest
+		return responsepkg.NewResponse(
+			responsepkg.WithMessage(err.Error()),
+			responsepkg.WithError(myError),
+			responsepkg.WithHttpCode(myError.HttpCode),
 		).Send(c)
 	}
 
 	idUser, err := h.ucs.RegisterUser(c.Request().Context(), req)
 	if err != nil {
-		myError, ok := response.ErrorMapping[err.Error()]
+		myError, ok := errorpkg.ErrorMapping[err.Error()]
 		if !ok {
-			myError = response.ErrorGeneral
+			myError = errorpkg.ErrorGeneral
 		}
-		return infraecho.NewResponse(
-			infraecho.WithMesssage(err.Error()),
-			infraecho.WithError(myError),
-			infraecho.WithHttpCode(response.ErrorBadRequest.HttpCode),
+		return responsepkg.NewResponse(
+			responsepkg.WithMessage(err.Error()),
+			responsepkg.WithError(myError),
+			responsepkg.WithHttpCode(errorpkg.ErrorBadRequest.HttpCode),
 		).Send(c)
 	}
 
-	return infraecho.NewResponse(
-		infraecho.WithHttpCode(http.StatusCreated),
-		infraecho.WithData(map[string]interface{}{
+	return responsepkg.NewResponse(
+		responsepkg.WithHttpCode(http.StatusCreated),
+		responsepkg.WithData(map[string]interface{}{
 			"userId": idUser,
 		}),
 	).Send(c)
@@ -59,30 +59,30 @@ func (h *handler) Login(c echo.Context) error {
 
 	err := c.Bind(&req)
 	if err != nil {
-		error := response.ErrorBadRequest
-		return infraecho.NewResponse(
-			infraecho.WithMesssage(err.Error()),
-			infraecho.WithError(error),
-			infraecho.WithHttpCode(error.HttpCode),
+		error := errorpkg.ErrorBadRequest
+		return responsepkg.NewResponse(
+			responsepkg.WithMessage(err.Error()),
+			responsepkg.WithError(error),
+			responsepkg.WithHttpCode(error.HttpCode),
 		).Send(c)
 	}
 
 	token, err := h.ucs.LoginUser(c.Request().Context(), req)
 	if err != nil {
-		error, ok := response.ErrorMapping[err.Error()]
+		error, ok := errorpkg.ErrorMapping[err.Error()]
 		if !ok {
-			error = response.ErrorGeneral
+			error = errorpkg.ErrorGeneral
 		}
-		return infraecho.NewResponse(
-			infraecho.WithMesssage(err.Error()),
-			infraecho.WithError(error),
-			infraecho.WithHttpCode(response.ErrorBadRequest.HttpCode),
+		return responsepkg.NewResponse(
+			responsepkg.WithMessage(err.Error()),
+			responsepkg.WithError(error),
+			responsepkg.WithHttpCode(errorpkg.ErrorBadRequest.HttpCode),
 		).Send(c)
 	}
 
-	return infraecho.NewResponse(
-		infraecho.WithHttpCode(http.StatusCreated),
-		infraecho.WithData(map[string]interface{}{
+	return responsepkg.NewResponse(
+		responsepkg.WithHttpCode(http.StatusCreated),
+		responsepkg.WithData(map[string]interface{}{
 			"accessToken": token,
 		}),
 	).Send(c)
