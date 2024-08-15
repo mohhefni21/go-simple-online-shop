@@ -17,7 +17,7 @@ func TestLoadConfig(t *testing.T) {
 
 	t.Run("should load configuration successfully", func(t *testing.T) {
 		// Arrange
-		filename := "../../cmd/api/config.yaml"
+		filename := "../../config.yaml"
 
 		// Action & Assert
 		require.Nil(t, LoadConfig(filename), "should not return an error when loading a valid config file")

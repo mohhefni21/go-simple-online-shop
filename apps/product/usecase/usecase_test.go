@@ -19,7 +19,7 @@ import (
 var ucs Usecase
 
 func init() {
-	filename := "../../../cmd/api/config.yaml"
+	filename := "../../../config.yaml"
 	err := config.LoadConfig(filename)
 
 	if err != nil {
@@ -39,6 +39,7 @@ var productTableTestHelper *test.ProductTableTestHelper
 
 func TestMain(m *testing.M) {
 	var err error
+	
 	productTableTestHelper, err = test.NewProductTableTestHelper()
 	if err != nil {
 		panic(err)

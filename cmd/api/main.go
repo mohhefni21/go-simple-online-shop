@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	filename := "cmd/api/config.yaml"
+	filename := "config.yaml"
 
 	err := config.LoadConfig(filename)
 	if err != nil {
