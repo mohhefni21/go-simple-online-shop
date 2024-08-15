@@ -4,7 +4,6 @@ import (
 	"context"
 	"mohhefni/go-online-shop/apps/auth/repository"
 	"mohhefni/go-online-shop/apps/auth/request"
-	"mohhefni/go-online-shop/apps/auth/service"
 	"mohhefni/go-online-shop/external/database"
 	"mohhefni/go-online-shop/internal/config"
 	"mohhefni/go-online-shop/test"
@@ -30,8 +29,7 @@ func init() {
 	}
 
 	repository := repository.NewRepository(db)
-	svc := service.NewService(repository)
-	ucs = NewUsecase(repository, svc)
+	ucs = NewUsecase(repository)
 }
 
 var authTableTestHelper *test.AuthTableTestHelper
@@ -50,7 +48,7 @@ func TestMain(m *testing.M) {
 
 func TestRegister(t *testing.T) {
 	t.Cleanup(func() {
-		if err := authTableTestHelper.CleanTable(); err != nil {
+		if err := authTableTestHelper.CleanTableUser(); err != nil {
 			t.Fatal(err)
 		}
 	})
@@ -96,7 +94,7 @@ func TestRegister(t *testing.T) {
 
 func TestLogin(t *testing.T) {
 	t.Cleanup(func() {
-		if err := authTableTestHelper.CleanTable(); err != nil {
+		if err := authTableTestHelper.CleanTableUser(); err != nil {
 			t.Fatal(err)
 		}
 	})

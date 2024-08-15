@@ -7,17 +7,17 @@ import (
 )
 
 type Response struct {
-	HttpCode  int         `json:"-"`
-	Success   bool        `json:"success"`
-	Message   string      `json:"message,omitempty"`
-	Data      interface{} `json:"data,omitempty"`
-	Error     string      `json:"error,omitempty"`
-	ErrorCode string      `json:"error_code,omitempty"`
+	HttpCode int         `json:"-"`
+	Status   string      `json:"status"`
+	Message  string      `json:"message,omitempty"`
+	Data     interface{} `json:"data,omitempty"`
+	Query    interface{} `json:"query,omitempty"`
+	Error    string      `json:"error,omitempty"`
 }
 
 func NewResponse(params ...func(*Response) *Response) Response {
 	var resp = Response{
-		Success: true,
+		Status: "success",
 	}
 	for _, param := range params {
 		param(&resp)
@@ -26,23 +26,40 @@ func NewResponse(params ...func(*Response) *Response) Response {
 	return resp
 }
 
+func WithStatus(err error) func(*Response) *Response {
+	return func(r *Response) *Response {
+		var receivedError error
+		// Cek error di ErrorMapping
+		receivedError, ok := errorpkg.ErrorMapping[err.Error()]
+		if !ok {
+			// Jika tidak ada gunakan error general
+			receivedError = errorpkg.ErrorGeneral
+		}
+
+		// Casting ke tipe Error
+		myError, ok := receivedError.(errorpkg.Error)
+		if !ok {
+			// Jika casting gagal gunakan error general lagi
+			myError = errorpkg.ErrorGeneral
+		}
+
+		r.Status = "fail"
+		r.HttpCode = myError.HttpCode
+		r.Message = myError.Messsage
+
+		// Jika error adalah ErrorGeneral kirim error asli untuk debugging
+		if myError == errorpkg.ErrorGeneral {
+			r.Status = "error"
+			r.Error = err.Error()
+		}
+
+		return r
+	}
+}
+
 func WithHttpCode(httpCode int) func(*Response) *Response {
 	return func(r *Response) *Response {
 		r.HttpCode = httpCode
-		return r
-	}
-}
-
-func WithSuccess(success bool) func(*Response) *Response {
-	return func(r *Response) *Response {
-		r.Success = success
-		return r
-	}
-}
-
-func WithMessage(message string) func(*Response) *Response {
-	return func(r *Response) *Response {
-		r.Message = message
 		return r
 	}
 }
@@ -54,18 +71,9 @@ func WithData(data interface{}) func(*Response) *Response {
 	}
 }
 
-func WithError(err error) func(*Response) *Response {
+func WithQuery(query interface{}) func(*Response) *Response {
 	return func(r *Response) *Response {
-		r.Success = false
-
-		myError, ok := err.(errorpkg.Error)
-		if !ok {
-			myError = errorpkg.ErrorGeneral
-		}
-
-		r.Error = myError.Messsage
-		r.ErrorCode = myError.Code
-
+		r.Query = query
 		return r
 	}
 }

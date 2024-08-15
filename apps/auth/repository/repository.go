@@ -53,7 +53,10 @@ func (r *repository) AddUser(ctx context.Context, model entity.AuthEntity) (id s
 func (r *repository) VerifyAvailableEmail(ctx context.Context, email string) (err error) {
 	var count int8
 	query := `
-		SELECT COUNT(email) FROM users WHERE email = $1
+		SELECT 
+			COUNT(email) 
+		FROM users 
+		WHERE email = $1
 	`
 
 	err = r.db.GetContext(ctx, &count, query, email)
@@ -70,7 +73,10 @@ func (r *repository) VerifyAvailableEmail(ctx context.Context, email string) (er
 
 func (r *repository) GetUserByEmail(ctx context.Context, email string) (user entity.AuthEntity, err error) {
 	query := `
-		SELECT * FROM users WHERE email = $1
+		SELECT 
+			public_id, email, password, role, created_at, updated_at 
+		FROM users 
+		WHERE email = $1
 	`
 
 	err = r.db.GetContext(ctx, &user, query, email)

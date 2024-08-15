@@ -38,7 +38,7 @@ func (a *AuthTableTestHelper) AddUser(email string, password string) (err error)
 	return
 }
 
-func (a *AuthTableTestHelper) CleanTable() (err error) {
+func (a *AuthTableTestHelper) CleanTableUser() (err error) {
 	query := `
 		DELETE FROM users
 	`

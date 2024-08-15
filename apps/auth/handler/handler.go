@@ -3,7 +3,6 @@ package handler
 import (
 	"mohhefni/go-online-shop/apps/auth/request"
 	"mohhefni/go-online-shop/apps/auth/usecase"
-	"mohhefni/go-online-shop/infra/errorpkg"
 	"mohhefni/go-online-shop/infra/responsepkg"
 	"net/http"
 
@@ -20,29 +19,20 @@ func NewHandler(usecase usecase.Usecase) *handler {
 	}
 }
 
-func (h *handler) Register(c echo.Context) error {
+func (h *handler) PostRegisterHandler(c echo.Context) error {
 	req := request.RegisterRequestPayload{}
 
 	err := c.Bind(&req)
 	if err != nil {
-		myError := errorpkg.ErrorBadRequest
 		return responsepkg.NewResponse(
-			responsepkg.WithMessage(err.Error()),
-			responsepkg.WithError(myError),
-			responsepkg.WithHttpCode(myError.HttpCode),
+			responsepkg.WithStatus(err),
 		).Send(c)
 	}
 
 	idUser, err := h.ucs.RegisterUser(c.Request().Context(), req)
 	if err != nil {
-		myError, ok := errorpkg.ErrorMapping[err.Error()]
-		if !ok {
-			myError = errorpkg.ErrorGeneral
-		}
 		return responsepkg.NewResponse(
-			responsepkg.WithMessage(err.Error()),
-			responsepkg.WithError(myError),
-			responsepkg.WithHttpCode(errorpkg.ErrorBadRequest.HttpCode),
+			responsepkg.WithStatus(err),
 		).Send(c)
 	}
 
@@ -54,29 +44,20 @@ func (h *handler) Register(c echo.Context) error {
 	).Send(c)
 }
 
-func (h *handler) Login(c echo.Context) error {
+func (h *handler) PostLoginHandler(c echo.Context) error {
 	req := request.LoginRequestPayload{}
 
 	err := c.Bind(&req)
 	if err != nil {
-		error := errorpkg.ErrorBadRequest
 		return responsepkg.NewResponse(
-			responsepkg.WithMessage(err.Error()),
-			responsepkg.WithError(error),
-			responsepkg.WithHttpCode(error.HttpCode),
+			responsepkg.WithStatus(err),
 		).Send(c)
 	}
 
 	token, err := h.ucs.LoginUser(c.Request().Context(), req)
 	if err != nil {
-		error, ok := errorpkg.ErrorMapping[err.Error()]
-		if !ok {
-			error = errorpkg.ErrorGeneral
-		}
 		return responsepkg.NewResponse(
-			responsepkg.WithMessage(err.Error()),
-			responsepkg.WithError(error),
-			responsepkg.WithHttpCode(errorpkg.ErrorBadRequest.HttpCode),
+			responsepkg.WithStatus(err),
 		).Send(c)
 	}
 

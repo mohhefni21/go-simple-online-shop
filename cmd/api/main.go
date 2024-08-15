@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"mohhefni/go-online-shop/apps/auth"
+	"mohhefni/go-online-shop/apps/product"
 	"mohhefni/go-online-shop/external/database"
 	"mohhefni/go-online-shop/internal/config"
 
@@ -30,6 +31,7 @@ func main() {
 	e := echo.New()
 
 	auth.Init(e, db)
+	product.Init(e, db)
 
 	addr := fmt.Sprint("127.0.0.1", config.Cfg.App.Port)
 	fmt.Printf("starting web server at %s", addr)
