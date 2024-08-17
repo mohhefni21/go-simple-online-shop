@@ -2,6 +2,7 @@ package entity
 
 import (
 	"encoding/json"
+	"mohhefni/go-online-shop/apps/transaction/request"
 	"time"
 )
 
@@ -45,9 +46,14 @@ type TransactionEntity struct {
 	UpdatedAt       time.Time         `db:"updated_at"`
 }
 
-func NewTransactionFromRequest(email string) *TransactionEntity {
+func (t *TransactionEntity) Validate() (err error) {
+
+}
+
+func NewTransactionFromRequest(req request.AddTransactionPayload) *TransactionEntity {
 	return &TransactionEntity{
-		Email:     email,
+		Email:     req.Email,
+		Amount:    req.Amount,
 		Status:    TransactionStatus_Created,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -60,9 +66,16 @@ func (t *TransactionEntity) SetSubTotal() {
 	}
 }
 
+func (t *TransactionEntity) SetPlatformFee(platformFee uint) {
+	t.PlatformFee = platformFee
+}
+
+// set id, price and call function to  set product snapshot
 func (t *TransactionEntity) FromProductToTransaction(product ProductJsonEntity) {
 	t.ProductId = uint(product.Id)
 	t.ProductPrice = uint(product.Price)
+
+	t.SetProductJson(product)
 }
 
 func (t *TransactionEntity) SetGrandTotal() {
@@ -72,6 +85,7 @@ func (t *TransactionEntity) SetGrandTotal() {
 	}
 }
 
+// set snapshot
 func (t *TransactionEntity) SetProductJson(product ProductJsonEntity) (err error) {
 	json, err := json.Marshal(product)
 	if err != nil {
@@ -92,6 +106,7 @@ func (t *TransactionEntity) GetProductJson() (product ProductJsonEntity, err err
 	return
 }
 
+// get data status in string
 func (t *TransactionEntity) GetStatus() string {
 	status, ok := MappintTransactionStatus[t.Status]
 	if !ok {
