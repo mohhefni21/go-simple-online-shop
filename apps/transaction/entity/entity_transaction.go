@@ -3,6 +3,7 @@ package entity
 import (
 	"encoding/json"
 	"mohhefni/go-online-shop/apps/transaction/request"
+	"mohhefni/go-online-shop/infra/errorpkg"
 	"time"
 )
 
@@ -33,10 +34,10 @@ var (
 
 type TransactionEntity struct {
 	Id              string            `db:"id"`
-	Email           string            `db:"email"`
+	UserPublicId    string            `db:"user_public_id"`
 	ProductId       uint              `db:"product_id"`
 	ProductPrice    uint              `db:"product_price"`
-	Amount          uint8             `db:"amount"`
+	Amount          uint16            `db:"amount"`
 	SubTotal        uint              `db:"sub_total"`
 	PlatformFee     uint              `db:"platform_fee"`
 	GrandTotal      uint              `db:"grand_total"`
@@ -46,43 +47,65 @@ type TransactionEntity struct {
 	UpdatedAt       time.Time         `db:"updated_at"`
 }
 
-func (t *TransactionEntity) Validate() (err error) {
+func (t *TransactionEntity) ValidateAmount() (err error) {
+	if t.Amount == 0 {
+		err = errorpkg.ErrAmountInvalid
+		return
+	}
 
+	return
+}
+
+func (t *TransactionEntity) ValidateStock(stock uint16) (err error) {
+	if t.Amount > stock {
+		err = errorpkg.ErrAmountGreaterThanStock
+		return
+	}
+
+	return
 }
 
 func NewTransactionFromRequest(req request.AddTransactionPayload) *TransactionEntity {
 	return &TransactionEntity{
-		Email:     req.Email,
-		Amount:    req.Amount,
-		Status:    TransactionStatus_Created,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		UserPublicId: req.UserPublicId,
+		Amount:       req.Amount,
+		Status:       TransactionStatus_Created,
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
 	}
 }
 
-func (t *TransactionEntity) SetSubTotal() {
+func (t *TransactionEntity) SetSubTotal() *TransactionEntity {
 	if t.SubTotal == 0 {
 		t.SubTotal = t.ProductPrice * uint(t.Amount)
 	}
+
+	return t
 }
 
-func (t *TransactionEntity) SetPlatformFee(platformFee uint) {
+func (t *TransactionEntity) SetPlatformFee(platformFee uint) *TransactionEntity {
 	t.PlatformFee = platformFee
+
+	return t
 }
 
 // set id, price and call function to  set product snapshot
-func (t *TransactionEntity) FromProductToTransaction(product ProductJsonEntity) {
+func (t *TransactionEntity) FromProductToTransaction(product ProductJsonEntity) *TransactionEntity {
 	t.ProductId = uint(product.Id)
 	t.ProductPrice = uint(product.Price)
 
 	t.SetProductJson(product)
+
+	return t
 }
 
-func (t *TransactionEntity) SetGrandTotal() {
+func (t *TransactionEntity) SetGrandTotal() *TransactionEntity {
 	if t.GrandTotal == 0 {
 		t.SetSubTotal()
 		t.GrandTotal = t.SubTotal + t.PlatformFee
 	}
+
+	return t
 }
 
 // set snapshot

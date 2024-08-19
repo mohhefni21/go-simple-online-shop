@@ -27,11 +27,46 @@ func (u *usecase) CreateTransaction(ctx context.Context, req request.AddTransact
 		return
 	}
 
-	trx := entity.NewTransactionFromRequest(req)
-	trx.FromProductToTransaction(products)
-	trx.SetPlatformFee(10000)
+	trx := entity.NewTransactionFromRequest(req).
+		FromProductToTransaction(products).
+		SetPlatformFee(10000).
+		SetGrandTotal()
 
-	err = u.repo.AddTransaction(ctx, *trx)
+	err = trx.ValidateAmount()
+	if err != nil {
+		return
+	}
+
+	err = trx.ValidateStock(products.Stock)
+	if err != nil {
+		return
+	}
+
+	tx, err := u.repo.Begin(ctx)
+	if err != nil {
+		return err
+	}
+
+	defer u.repo.Roolback(ctx, tx)
+
+	err = u.repo.AddTransaction(ctx, tx, *trx)
+	if err != nil {
+		return err
+	}
+
+	err = products.UpdateStockProduct(trx.Amount)
+	if err != nil {
+		return err
+	}
+
+	err = u.repo.UpdateStockProduct(ctx, tx, products)
+
+	err = u.repo.Commit(ctx, tx)
+	if err != nil {
+		return err
+	}
 
 	return
 }
+
+func (u *usecase) GetTransaction

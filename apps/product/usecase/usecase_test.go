@@ -39,7 +39,7 @@ var productTableTestHelper *test.ProductTableTestHelper
 
 func TestMain(m *testing.M) {
 	var err error
-	
+
 	productTableTestHelper, err = test.NewProductTableTestHelper()
 	if err != nil {
 		panic(err)
@@ -119,7 +119,7 @@ func TestGetDetailProduct(t *testing.T) {
 		sku := uuid.NewString()
 
 		payload := request.AddProductPayload{
-			Name:  "sampo",
+			Name:  "sampo lifeboy",
 			Stock: 21,
 			Price: 25000,
 		}

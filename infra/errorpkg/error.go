@@ -70,20 +70,26 @@ var (
 	ErrorProductInvalid  = NewError(ErrProductInvalid.Error(), http.StatusBadRequest)
 	ErrorStockInvalid    = NewError(ErrStockInvalid.Error(), http.StatusBadRequest)
 	ErrorPriceInvalid    = NewError(ErrPriceInvalid.Error(), http.StatusBadRequest)
+
+	// Transaction
+	ErrorAmountInvalid          = NewError(ErrAmountInvalid.Error(), http.StatusBadRequest)
+	ErrorAmountGreaterThanStock = NewError(ErrAmountInvalid.Error(), http.StatusBadRequest)
 )
 
 var (
 	ErrorMapping = map[string]Error{
-		ErrEmailRequired.Error():         ErrorEmailRequired,
-		ErrEmailInvalid.Error():          ErrorEmailInvalid,
-		ErrPasswordRequired.Error():      ErrorPasswordRequired,
-		ErrEmailAlreadyUsed.Error():      ErrorEmailAlreadyUsed,
-		ErrPasswordInvalidLength.Error(): ErrorPasswordInvalidLength,
-		ErrPasswordNotMatch.Error():      ErrorPasswordNotMatch,
-		ErrProductRequired.Error():       ErrorProductRequired,
-		ErrProductInvalid.Error():        ErrorProductInvalid,
-		ErrPriceInvalid.Error():          ErrorPriceInvalid,
-		ErrStockInvalid.Error():          ErrorStockInvalid,
-		ErrNotFound.Error():              ErrorNotFound,
+		ErrEmailRequired.Error():          ErrorEmailRequired,
+		ErrEmailInvalid.Error():           ErrorEmailInvalid,
+		ErrPasswordRequired.Error():       ErrorPasswordRequired,
+		ErrEmailAlreadyUsed.Error():       ErrorEmailAlreadyUsed,
+		ErrPasswordInvalidLength.Error():  ErrorPasswordInvalidLength,
+		ErrPasswordNotMatch.Error():       ErrorPasswordNotMatch,
+		ErrProductRequired.Error():        ErrorProductRequired,
+		ErrProductInvalid.Error():         ErrorProductInvalid,
+		ErrPriceInvalid.Error():           ErrorPriceInvalid,
+		ErrStockInvalid.Error():           ErrorStockInvalid,
+		ErrNotFound.Error():               ErrorNotFound,
+		ErrAmountInvalid.Error():          ErrorAmountInvalid,
+		ErrAmountGreaterThanStock.Error(): ErrorAmountGreaterThanStock,
 	}
 )
