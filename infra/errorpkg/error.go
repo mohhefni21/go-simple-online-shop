@@ -91,5 +91,6 @@ var (
 		ErrNotFound.Error():               ErrorNotFound,
 		ErrAmountInvalid.Error():          ErrorAmountInvalid,
 		ErrAmountGreaterThanStock.Error(): ErrorAmountGreaterThanStock,
+		ErrUnauthorized.Error():           ErrorUnauthorized,
 	}
 )

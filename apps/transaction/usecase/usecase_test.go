@@ -39,8 +39,20 @@ func TestAddProduct(t *testing.T) {
 			Amount:       2,
 		}
 
+		// Action
 		err := ucs.CreateTransaction(context.Background(), transaction)
 
+		// Assert
 		require.Nil(t, err)
+	})
+}
+func TestGetTransactionHistory(t *testing.T) {
+	t.Run("should return transactions history by users", func(t *testing.T) {
+		// Action
+		transactions, err := ucs.GetTransactionsHistory(context.Background(), "9ad51038-87a5-4fee-b805-afbba2ee78df")
+
+		// Assert
+		require.Nil(t, err)
+		t.Logf("%v", transactions)
 	})
 }

@@ -102,23 +102,20 @@ func (r *repository) UpdateStockProduct(ctx context.Context, tx *sqlx.Tx, produc
 
 func (r *repository) GetTransactionByUser(ctx context.Context, publicIdUser string) (transactions []entity.TransactionEntity, err error) {
 	query := `
-		SELECT
-			id, sku, name, stock, price, created_at, updated_at
-		FROM products
-		WHERE sku=$1
+		SELECT 
+			id, user_public_id, product_id, product_price,
+			amount, sub_total, platform_fee, 
+			grand_total, status, product_snapshot, 
+			created_at, updated_at
+		FROM transactions
+		WHERE user_public_id=$1
 	`
 
-	stmt, err := r.db.PrepareContext(ctx, query)
-	if err != nil {
-		return
-	}
-
-	stmt.ExecContext(ctx, publicIdUser)
-
+	err = r.db.SelectContext(ctx, &transactions, query, publicIdUser)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			err = errorpkg.ErrNotFound
-			return []entity.TransactionEntity{}, nil
+			return []entity.TransactionEntity{}, err
 		}
 		return
 	}

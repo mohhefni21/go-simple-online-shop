@@ -9,9 +9,9 @@ import (
 
 func GenerateToken(id string, role string, secret string) (jwtToken string, err error) {
 	claims := jwt.MapClaims{
-		"id":   id,
-		"role": role,
-		"exp":  jwt.NewNumericDate(time.Now().Add(10 * time.Minute)).Unix(),
+		"public_id": id,
+		"role":      role,
+		"exp":       jwt.NewNumericDate(time.Now().Add(10 * time.Minute)).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -24,7 +24,7 @@ func GenerateToken(id string, role string, secret string) (jwtToken string, err 
 	return
 }
 
-func ValidateToken(tokenString string, secret string) (id string, role string, err error) {
+func ValidateToken(tokenString string, secret string) (publicId string, role string, err error) {
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method")
@@ -39,7 +39,7 @@ func ValidateToken(tokenString string, secret string) (id string, role string, e
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
-		id = fmt.Sprintf("%v", claims["id"])
+		publicId = fmt.Sprintf("%v", claims["public_id"])
 		role = fmt.Sprintf("%v", claims["role"])
 		return
 	}
