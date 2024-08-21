@@ -1,6 +1,7 @@
 package product
 
 import (
+	"mohhefni/go-online-shop/apps/auth/entity"
 	"mohhefni/go-online-shop/apps/product/handler"
 	"mohhefni/go-online-shop/apps/product/repository"
 	"mohhefni/go-online-shop/apps/product/usecase"
@@ -15,8 +16,8 @@ func Init(e *echo.Echo, db *sqlx.DB) {
 	usecase := usecase.NewUsecase(repo)
 	handler := handler.NewHandler(usecase)
 
-	g := e.Group("products", middleware.CheckAuth)
-	g.POST("", handler.PostProductHandler)
+	g := e.Group("products")
+	g.POST("", handler.PostProductHandler, middleware.CheckAuth, middleware.CheckRole([]string{string(entity.ROLE_ADMIN)}))
 	g.GET("", handler.GetAllProductsHandler)
 	g.GET("/sku/:sku", handler.GetDetailProductHandler)
 }

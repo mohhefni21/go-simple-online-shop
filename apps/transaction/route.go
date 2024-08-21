@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"mohhefni/go-online-shop/apps/auth/entity"
 	"mohhefni/go-online-shop/apps/transaction/handler"
 	"mohhefni/go-online-shop/apps/transaction/repository"
 	"mohhefni/go-online-shop/apps/transaction/usecase"
@@ -15,7 +16,7 @@ func Init(e *echo.Echo, db *sqlx.DB) {
 	usecase := usecase.NewUsecase(repo)
 	handler := handler.NewHandler(usecase)
 
-	g := e.Group("transactions", middleware.CheckAuth)
+	g := e.Group("transactions", middleware.CheckAuth, middleware.CheckRole([]string{string(entity.ROLE_USER)}))
 	g.POST("/checkout", handler.PostTransactionHandler)
 	g.GET("/history", handler.GetTransactionByUserHandler)
 }

@@ -5,6 +5,7 @@ import (
 	"mohhefni/go-online-shop/apps/transaction/response"
 	"mohhefni/go-online-shop/apps/transaction/usecase"
 	"mohhefni/go-online-shop/infra/responsepkg"
+	"mohhefni/go-online-shop/utility"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -26,6 +27,7 @@ func (h *handler) PostTransactionHandler(c echo.Context) error {
 
 	err := c.Bind(&req)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)
@@ -35,6 +37,7 @@ func (h *handler) PostTransactionHandler(c echo.Context) error {
 
 	err = h.usecase.CreateTransaction(c.Request().Context(), req)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)
@@ -50,6 +53,7 @@ func (h *handler) GetTransactionByUserHandler(c echo.Context) error {
 
 	transactions, err := h.usecase.GetTransactionsHistory(c.Request().Context(), publicId)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)

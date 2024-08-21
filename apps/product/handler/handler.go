@@ -6,6 +6,7 @@ import (
 	"mohhefni/go-online-shop/apps/product/usecase"
 	"mohhefni/go-online-shop/infra/errorpkg"
 	"mohhefni/go-online-shop/infra/responsepkg"
+	"mohhefni/go-online-shop/utility"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -26,6 +27,7 @@ func (h *handler) PostProductHandler(c echo.Context) error {
 
 	err := c.Bind(&req)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)
@@ -33,6 +35,7 @@ func (h *handler) PostProductHandler(c echo.Context) error {
 
 	productSku, err := h.ucs.CreateProduct(c.Request().Context(), req)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)
@@ -51,6 +54,7 @@ func (h *handler) GetAllProductsHandler(c echo.Context) error {
 
 	err := c.Bind(&req)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)
@@ -58,6 +62,7 @@ func (h *handler) GetAllProductsHandler(c echo.Context) error {
 
 	products, err := h.ucs.GetProducts(c.Request().Context(), req)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)
@@ -79,6 +84,7 @@ func (h *handler) GetDetailProductHandler(c echo.Context) error {
 	params := c.Param("sku")
 	if params == "" {
 		err := errorpkg.ErrorNotFound
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)
@@ -86,6 +92,7 @@ func (h *handler) GetDetailProductHandler(c echo.Context) error {
 
 	products, err := h.ucs.GetDetailProduct(c.Request().Context(), params)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)

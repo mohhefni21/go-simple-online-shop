@@ -4,6 +4,7 @@ import (
 	"mohhefni/go-online-shop/apps/auth/request"
 	"mohhefni/go-online-shop/apps/auth/usecase"
 	"mohhefni/go-online-shop/infra/responsepkg"
+	"mohhefni/go-online-shop/utility"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -24,6 +25,7 @@ func (h *handler) PostRegisterHandler(c echo.Context) error {
 
 	err := c.Bind(&req)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)
@@ -31,6 +33,7 @@ func (h *handler) PostRegisterHandler(c echo.Context) error {
 
 	idUser, err := h.ucs.RegisterUser(c.Request().Context(), req)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)
@@ -49,6 +52,7 @@ func (h *handler) PostLoginHandler(c echo.Context) error {
 
 	err := c.Bind(&req)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)
@@ -56,6 +60,7 @@ func (h *handler) PostLoginHandler(c echo.Context) error {
 
 	token, err := h.ucs.LoginUser(c.Request().Context(), req)
 	if err != nil {
+		utility.MakeLogEntry(nil).Warning(err)
 		return responsepkg.NewResponse(
 			responsepkg.WithStatus(err),
 		).Send(c)

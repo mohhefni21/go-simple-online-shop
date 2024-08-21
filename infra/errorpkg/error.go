@@ -92,5 +92,6 @@ var (
 		ErrAmountInvalid.Error():          ErrorAmountInvalid,
 		ErrAmountGreaterThanStock.Error(): ErrorAmountGreaterThanStock,
 		ErrUnauthorized.Error():           ErrorUnauthorized,
+		ErrForbiddenAccess.Error():        ErrorForbiddenAccess,
 	}
 )
