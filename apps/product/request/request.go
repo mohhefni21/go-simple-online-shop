@@ -1,9 +1,9 @@
 package request
 
 type AddProductPayload struct {
-	Name  string `json:"name"`
-	Stock int16  `json:"stock"`
-	Price int    `json:"price"`
+	Name  string `json:"name" example:"sabun"`
+	Stock int16  `json:"stock" example:"25"`
+	Price int    `json:"price" example:"2500"`
 }
 
 type GetProductsRequestPayload struct {

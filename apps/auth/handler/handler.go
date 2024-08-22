@@ -20,6 +20,18 @@ func NewHandler(usecase usecase.Usecase) *handler {
 	}
 }
 
+// PostRegisterHandler godoc
+// @Router       /auth/register [post]
+// @Summary Register new user
+// @Description Register with new user with the provided details
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        request body request.RegisterRequestPayload true "User registration details"
+// @Success      201 "Created - User registered successfully"
+// @Failure      400 "Bad request - Invalid input"
+// @Failure      409 "Conflict - user already exists"
+// @Failure      500 "Internal server error"
 func (h *handler) PostRegisterHandler(c echo.Context) error {
 	req := request.RegisterRequestPayload{}
 
@@ -47,6 +59,19 @@ func (h *handler) PostRegisterHandler(c echo.Context) error {
 	).Send(c)
 }
 
+// PostLoginHandler godoc
+// @Router       /auth/login [post]
+// @Summary      Login user
+// @Description  Authenticate a user and return a JWT token
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        request body request.LoginRequestPayload true "User login details"
+// @Success      201 "Created - User logged successfully"
+// @Failure      400 "Bad request - Invalid input"
+// @Failure      401 "Unauthorized - Invalid or missing token"
+// @Failure      404 "Not Found - Resource not found"
+// @Failure      500 "Internal server error"
 func (h *handler) PostLoginHandler(c echo.Context) error {
 	req := request.LoginRequestPayload{}
 

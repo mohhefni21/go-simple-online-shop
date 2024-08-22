@@ -1,0 +1,242 @@
+definitions:
+  request.AddProductPayload:
+    properties:
+      name:
+        example: sabun
+        type: string
+      price:
+        example: 2500
+        type: integer
+      stock:
+        example: 25
+        type: integer
+    type: object
+  request.AddTransactionPayload:
+    properties:
+      amount:
+        example: 7
+        type: integer
+      product_sku:
+        example: 3f369638-de78-4c6e-8e99-2f5507d346c7
+        type: string
+    type: object
+  request.LoginRequestPayload:
+    properties:
+      email:
+        example: user123@gmail.com
+        type: string
+      password:
+        example: supersecret123
+        type: string
+    type: object
+  request.RegisterRequestPayload:
+    properties:
+      email:
+        example: user123@gmail.com
+        type: string
+      password:
+        example: supersecret123
+        type: string
+    type: object
+host: localhost:9000
+info:
+  contact: {}
+  description: This is a simple API for an online shop with go, providing functionalities
+    like product management, order processing, and user management.
+  title: Go online shop api
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a JWT token
+      parameters:
+      - description: User login details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginRequestPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created - User logged successfully
+        "400":
+          description: Bad request - Invalid input
+        "401":
+          description: Unauthorized - Invalid or missing token
+        "404":
+          description: Not Found - Resource not found
+        "500":
+          description: Internal server error
+      summary: Login user
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register with new user with the provided details
+      parameters:
+      - description: User registration details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.RegisterRequestPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created - User registered successfully
+        "400":
+          description: Bad request - Invalid input
+        "409":
+          description: Conflict - user already exists
+        "500":
+          description: Internal server error
+      summary: Register new user
+      tags:
+      - auth
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of products with optional pagination. Returns a
+        collection of product attributes.
+      parameters:
+      - description: Cursor for pagination
+        in: query
+        name: cursor
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok - Successfully retrieved all products
+        "500":
+          description: Internal server error
+      summary: Get List of Products
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Add products and return id products
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Add product details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddProductPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created - Product added successfully
+        "400":
+          description: Bad request - Invalid input
+        "401":
+          description: Unauthorized - Invalid or missing token
+        "403":
+          description: Forbidden access - access not allowed
+        "500":
+          description: Internal server error
+      summary: Add product
+      tags:
+      - products
+  /products/sku/{sku}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve detailed information about a specific product using its
+        SKU. Returns attributes of the product.
+      parameters:
+      - description: Sku products
+        in: path
+        name: sku
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok - Successfully retrieved the product details
+        "404":
+          description: Not Found - Resource not found
+        "500":
+          description: Internal server error
+      summary: Get Product Details
+      tags:
+      - products
+  /transactions/checkout:
+    post:
+      consumes:
+      - application/json
+      description: Process a checkout transaction, reducing stock levels and creating
+        an order record.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Add transaction details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddTransactionPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created - Transaction added successfully
+        "400":
+          description: Bad request - Invalid input
+        "401":
+          description: Unauthorized - Invalid or missing token
+        "403":
+          description: Forbidden access - access not allowed
+        "404":
+          description: Not Found - Resource not found
+        "500":
+          description: Internal server error
+      summary: Checkout transation
+      tags:
+      - transactions
+  /transactions/history:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of history transactions. Returns a collection of
+        transactions attributes.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok - Successfully retrieved transaction histories
+        "500":
+          description: Internal server error
+      summary: History transation
+      tags:
+      - transactions
+swagger: "2.0"
