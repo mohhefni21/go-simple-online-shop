@@ -53,10 +53,10 @@ func (r *repository) GetAllProducts(ctx context.Context, model entity.ProductPag
 		SELECT
 			id, sku, name, stock, price, created_at, updated_at
 		FROM products
+		LIMIT $1 OFFSET $2
 	`
-	_ = model.Cursor 
-	_ = model.Size
-	err = r.db.SelectContext(ctx, &products, query)
+	
+	err = r.db.SelectContext(ctx, &products, query, model.Size, model.Cursor)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errorpkg.ErrNotFound

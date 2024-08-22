@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"mohhefni/go-online-shop/apps/transaction/entity"
 	"mohhefni/go-online-shop/apps/transaction/repository"
 	"mohhefni/go-online-shop/apps/transaction/request"
@@ -26,7 +25,6 @@ func NewUsecase(repo repository.Repository) Usecase {
 func (u *usecase) CreateTransaction(ctx context.Context, req request.AddTransactionPayload) (err error) {
 	products, err := u.repo.GetDetailProductBySku(ctx, req.ProduckSku)
 	if err != nil {
-		fmt.Println("not-found")
 		return
 	}
 

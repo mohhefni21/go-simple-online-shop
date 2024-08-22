@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS products (
+    id SERIAL PRIMARY KEY,
+    sku VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    stock INTEGER NOT NULL,
+    price INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);

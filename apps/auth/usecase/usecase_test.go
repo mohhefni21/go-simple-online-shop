@@ -65,7 +65,7 @@ func TestRegister(t *testing.T) {
 			panic(err)
 		}
 
-		err = authTableTestHelper.AddUser(payload.Email, payload.Password)
+		_, err = authTableTestHelper.AddUser(payload.Email, payload.Password)
 		if err != nil {
 			panic(err)
 		}

@@ -39,7 +39,7 @@ func (a *ProductTableTestHelper) AddProduct(sku string, name string, stock int16
 
 func (p *ProductTableTestHelper) CleanTableProduct() (err error) {
 	query := `
-		DELETE FROM products
+		TRUNCATE products
 	`
 
 	_, err = p.db.Exec(query)

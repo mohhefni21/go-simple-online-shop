@@ -24,23 +24,26 @@ func NewAuthTableTestHelper() (*AuthTableTestHelper, error) {
 	}, nil
 }
 
-func (a *AuthTableTestHelper) AddUser(email string, password string) (err error) {
+func (a *AuthTableTestHelper) AddUser(email string, password string) (public_id string, err error) {
 	query := `
 		INSERT INTO users (
 			public_id, email, password, created_at, updated_at
 		) VALUES (
 			$1, $2, $3, $4, $5
-		)
+		) RETURNING public_id
 	`
 
-	_, err = a.db.Exec(query, uuid.New(), email, password, time.Now(), time.Now())
+	err = a.db.QueryRow(query, uuid.New(), email, password, time.Now(), time.Now()).Scan(&public_id)
+	if err != nil {
+		return
+	}
 
 	return
 }
 
 func (a *AuthTableTestHelper) CleanTableUser() (err error) {
 	query := `
-		DELETE FROM users
+		TRUNCATE users
 	`
 
 	_, err = a.db.Exec(query)

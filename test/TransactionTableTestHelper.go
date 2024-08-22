@@ -38,7 +38,7 @@ func NewTransactionTableTestHelper() (*TransactionTableTestHelper, error) {
 
 func (a *TransactionTableTestHelper) CleanTableTransaction() (err error) {
 	query := `
-		DELETE FROM transactions
+		TRUNCATE transactions
 	`
 
 	_, err = a.db.Exec(query)
