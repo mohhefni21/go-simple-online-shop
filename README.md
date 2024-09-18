@@ -20,7 +20,6 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
   </ol>
@@ -63,22 +62,6 @@ This project worker can follow the steps below:
 2. [Postgres](https://www.postgresql.org/)
 3. [Swagger](https://github.com/swaggo/swag)
 4. [Golang-Migrate](https://github.com/golang-migrate/migrate)
-
-### Installation
-
-1. Clone the repo
-   ```sh
-   git clone https://github.com/sasmeka/backend_coffeshop_with_go.git
-   ```
-2. Install modules packages
-   ```sh
-   go mod download
-   ```
-3. please configure config.yml
-4. Run
-   ```sh
-   go run ./cmd/main.go
-   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
